@@ -1,4 +1,3 @@
-import React from 'react'
 
 const AddForm = ({addPerson, newName, handleNameChange, newNumber, handleNumberChange}) => {
     return (
