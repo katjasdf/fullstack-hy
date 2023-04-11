@@ -1,4 +1,3 @@
-
 const AddForm = ({addPerson, newName, handleNameChange, newNumber, handleNumberChange}) => {
     return (
         <form onSubmit={addPerson}>

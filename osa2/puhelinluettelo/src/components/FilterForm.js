@@ -1,4 +1,3 @@
-
 const FilterForm = ({keyword, handleFiltering}) => {
     return (
         <form>

@@ -1,35 +1,76 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import { getAll, create, update, remove } from './services/persons'
+
 import Persons from './components/Persons'
 import AddForm from './components/AddForm'
 import FilterForm from './components/FilterForm'
+import Notification from './components/Notification'
 
 const App = () => {
-    const [persons, setPersons] = useState([
-        { name: 'Arto Hellas', number: '040-1231244' },
-        { name: 'Ada Lovelace', number: '39-44-5323523' },
-        { name: 'Dan Abramov', number: '12-43-234345' },
-        { name: 'Mary Poppendieck', number: '39-23-6423122' }
-    ])
-
+    const [persons, setPersons] = useState([])
     const [newName, setNewName] = useState('')
     const [newNumber, setNewNumber] = useState('')
     const [keyword, setKeyword] = useState('')
+    const [notificationMessage, setNotificationMessage] = useState('')
+
+    useEffect(() => {
+        getAll()
+            .then(initialPersons => {
+                setPersons(initialPersons)
+            })
+    }, [])
   
     const addPerson = (event) => {
         event.preventDefault()
-        const names = persons.map(person => person.name)
+        const foundPerson = persons.find(p => p.name === newName)
         const personObject = {
             name: newName,
             number: newNumber
         }
 
-        if (names.includes(newName)) {
-            alert(`${newName} is already added to phonebook`)
+        if (!!foundPerson) {
+            window.confirm(`${newName} is already added to phonebook. Do you want to replace the old number with new one?`)
+            && update(foundPerson.id, personObject)
+                .then(updatedPerson => {
+                    setPersons(persons.map(person => person.id !== foundPerson.id ? person : updatedPerson))
+                    setNewName('')
+                    setNewNumber('')
+                })
+                .then(
+                    setNotificationMessage('update'),
+                    setTimeout(() => {
+                        setNotificationMessage(null)
+                    }, 5000)
+                )
         } else {
-            setPersons(persons.concat(personObject))
-            setNewName('')
-            setNewNumber('')
+            create(personObject)
+                .then(newPerson => {
+                    setPersons(persons.concat(newPerson))
+                    setNewName('')
+                    setNewNumber('')
+                })
+                .then(
+                    setNotificationMessage('add'),
+                    setTimeout(() => {
+                        setNotificationMessage(null)
+                    }, 5000)
+                )
         }
+    }
+
+    const handleRemovingPerson = (person) => {
+        window.confirm(`Do you really want to delete ${person.name}?`)
+        && remove(person.id)
+            .then(
+                setPersons(personList.filter(n => n.id !== person.id))
+                
+            )
+            .then(
+                setNotificationMessage('remove'),
+                setTimeout(() => {
+                    setNotificationMessage(null)
+                }, 5000)
+            )
     }
 
     const handleNameChange = (event) => { setNewName(event.target.value) }
@@ -43,6 +84,9 @@ const App = () => {
     return (
       <div>
         <h2>Phonebook</h2>
+        <Notification
+            message={notificationMessage}
+        />
         <FilterForm
             keyword={keyword}
             handleFiltering={handleFiltering}
@@ -56,6 +100,7 @@ const App = () => {
         />
         <Persons
             personList={personList}
+            handleRemovingPerson={handleRemovingPerson}
         />
       </div>
     )
