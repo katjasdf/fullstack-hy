@@ -1,21 +1,27 @@
-const Notification = ({ message }) => {
- 
-    if (message === 'remove') {
+const Notification = ({ data }) => {
+
+    if (data.message === 'remove') {
         return (
             <div className="notification">
-                 deleted from server.
+                {data.personName} deleted.
             </div>
         )
-    } if (message === 'add') {
+    } if (data.message === 'add') {
         return (
             <div className="notification">
-                Person added!
+                {data.personName} added!
             </div>
         )
-    } if (message === 'update') {
+    } if (data.message === 'update') {
         return (
             <div className="notification">
-                Edits saved!
+                {data.personName} updated!
+            </div>
+        )
+    } if (data.message === 'error') {
+        return (
+            <div className="error">
+                {data.personName} was already removed from server.
             </div>
         )
     } else return null

@@ -11,7 +11,7 @@ const App = () => {
     const [newName, setNewName] = useState('')
     const [newNumber, setNewNumber] = useState('')
     const [keyword, setKeyword] = useState('')
-    const [notificationMessage, setNotificationMessage] = useState('')
+    const [notificationData, setNotificationData] = useState({message: '', personName: ''})
 
     useEffect(() => {
         getAll()
@@ -37,9 +37,9 @@ const App = () => {
                     setNewNumber('')
                 })
                 .then(
-                    setNotificationMessage('update'),
+                    setNotificationData({message: 'update', personName: newName}),
                     setTimeout(() => {
-                        setNotificationMessage(null)
+                        setNotificationData({message: '', personName: ''})
                     }, 5000)
                 )
         } else {
@@ -50,9 +50,9 @@ const App = () => {
                     setNewNumber('')
                 })
                 .then(
-                    setNotificationMessage('add'),
+                    setNotificationData({message: 'add', personName: newName}),
                     setTimeout(() => {
-                        setNotificationMessage(null)
+                        setNotificationData({message: '', personName: ''})
                     }, 5000)
                 )
         }
@@ -62,15 +62,21 @@ const App = () => {
         window.confirm(`Do you really want to delete ${person.name}?`)
         && remove(person.id)
             .then(
-                setPersons(personList.filter(n => n.id !== person.id))
-                
+                setPersons(personList.filter(n => n.id !== person.id))   
             )
             .then(
-                setNotificationMessage('remove'),
+                setNotificationData({message: 'remove', personName: person.name}),
                 setTimeout(() => {
-                    setNotificationMessage(null)
+                    setNotificationData({message: '', personName: ''})
                 }, 5000)
             )
+            .catch(error => {
+                setNotificationData({message: 'error', personName: person.name})
+                setTimeout(() => {
+                    setNotificationData({message: '', personName: ''})
+                }, 5000)
+                setPersons(persons.filter(n => n.id !== person.id))
+            })
     }
 
     const handleNameChange = (event) => { setNewName(event.target.value) }
@@ -85,7 +91,7 @@ const App = () => {
       <div>
         <h2>Phonebook</h2>
         <Notification
-            message={notificationMessage}
+            data={notificationData}
         />
         <FilterForm
             keyword={keyword}
