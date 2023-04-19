@@ -1,4 +1,4 @@
-const FilterForm = ({keyword, handleFiltering}) => {
+const FilterForm = ({ keyword, handleFiltering }) => {
     return (
         <form>
             <div>

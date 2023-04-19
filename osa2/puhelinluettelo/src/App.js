@@ -79,9 +79,9 @@ const App = () => {
             })
     }
 
-    const handleNameChange = (event) => { setNewName(event.target.value) }
-    const handleNumberChange = (event) => { setNewNumber(event.target.value) }
-    const handleFiltering = (event) => { setKeyword(event.target.value) }
+    const handleNameChange = (event) => {setNewName(event.target.value)}
+    const handleNumberChange = (event) => {setNewNumber(event.target.value)}
+    const handleFiltering = (event) => {setKeyword(event.target.value)}
 
     const personList = keyword === ''
         ? persons

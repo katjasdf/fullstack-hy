@@ -1,6 +1,6 @@
 import Person from './Person'
 
-const Persons = ({personList, handleRemovingPerson}) => {
+const Persons = ({ personList, handleRemovingPerson }) => {
     return (
         <div>
             <h2>Numbers</h2>
