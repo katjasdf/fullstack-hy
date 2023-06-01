@@ -11,7 +11,7 @@ const App = () => {
     const [newName, setNewName] = useState('')
     const [newNumber, setNewNumber] = useState('')
     const [keyword, setKeyword] = useState('')
-    const [notificationData, setNotificationData] = useState({message: '', personName: ''})
+    const [notificationData, setNotificationData] = useState({type: '', message: ''})
 
     useEffect(() => {
         getAll()
@@ -19,6 +19,12 @@ const App = () => {
                 setPersons(initialPersons)
             })
     }, [])
+
+    const handleCloseNotification = () => {
+        setTimeout(() => {
+            setNotificationData({type: '', message: ''})
+        }, 5000)
+    }
   
     const addPerson = (event) => {
         event.preventDefault()
@@ -35,47 +41,36 @@ const App = () => {
                     setPersons(persons.map(person => person.id !== foundPerson.id ? person : updatedPerson))
                     setNewName('')
                     setNewNumber('')
+                    setNotificationData({type: 'success', message: `${newName} updated!`})
+                    handleCloseNotification()
                 })
-                .then(
-                    setNotificationData({message: 'update', personName: newName}),
-                    setTimeout(() => {
-                        setNotificationData({message: '', personName: ''})
-                    }, 5000)
-                )
         } else {
             create(personObject)
                 .then(newPerson => {
                     setPersons(persons.concat(newPerson))
                     setNewName('')
                     setNewNumber('')
+                    setNotificationData({type: 'success', message: `${newName} added!`})
+                    handleCloseNotification()
                 })
-                .then(
-                    setNotificationData({message: 'add', personName: newName}),
-                    setTimeout(() => {
-                        setNotificationData({message: '', personName: ''})
-                    }, 5000)
-                )
+                .catch(error => {
+                    setNotificationData({type: 'error', message: `${error.response.data.error}`})
+                    handleCloseNotification()
+                })
         }
     }
 
     const handleRemovingPerson = (person) => {
         window.confirm(`Do you really want to delete ${person.name}?`)
         && remove(person.id)
-            .then(
-                setPersons(personList.filter(n => n.id !== person.id))   
-            )
-            .then(
-                setNotificationData({message: 'remove', personName: person.name}),
-                setTimeout(() => {
-                    setNotificationData({message: '', personName: ''})
-                }, 5000)
-            )
+            .then(() => {
+                setPersons(personList.filter(n => n.id !== person.id))  
+                setNotificationData({type: 'success', message: `${person.name} removed!`})
+                handleCloseNotification()
+            })
             .catch(error => {
-                setNotificationData({message: 'error', personName: person.name})
-                setTimeout(() => {
-                    setNotificationData({message: '', personName: ''})
-                }, 5000)
-                setPersons(persons.filter(n => n.id !== person.id))
+                setPersons(personList.filter(n => n.id !== person.id))
+                console.log('front end', error.response.data)
             })
     }
 
