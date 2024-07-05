@@ -1,1 +1,3 @@
-[Osa 1 - Anekdootit](osa1/anekdootit/README.md)
+HY Fullstack open course assignments repo
+
+https://fullstackopen.com/
