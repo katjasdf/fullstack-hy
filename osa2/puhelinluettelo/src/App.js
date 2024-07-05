@@ -70,7 +70,6 @@ const App = () => {
             })
             .catch(error => {
                 setPersons(personList.filter(n => n.id !== person.id))
-                console.log('front end', error.response.data)
             })
     }
 
